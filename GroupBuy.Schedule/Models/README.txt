@@ -1,0 +1,1 @@
+﻿Scaffold-DbContext -Connection name=DefaultConnection Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/Entites -Context GroupBuyEntities -Force -NoPluralize -UseDatabaseNames
