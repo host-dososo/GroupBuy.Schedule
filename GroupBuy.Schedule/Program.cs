@@ -2,6 +2,7 @@ using GroupBuy.Schedule.Models.Entites;
 using GroupBuy.Schedule.Services;
 using GroupBuy.Schedule.Services.Swagger;
 using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.IdentityModel.Tokens;
@@ -51,7 +52,10 @@ EFService.SetEntities(serviceProvider.GetService<GroupBuyEntities>());
 // 設定 Hangfire 服務
 builder.Services.AddHangfire(config =>
 {
-    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")).WithJobExpirationTimeout(TimeSpan.FromDays(30));
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+    {
+        PrepareSchemaIfNecessary = false // 禁止 Hangfire 嘗試更新 Schema
+    }).WithJobExpirationTimeout(TimeSpan.FromDays(30));
 });
 
 // 在服務中加入 Hangfire 伺服器

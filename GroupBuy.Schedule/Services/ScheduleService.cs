@@ -46,7 +46,9 @@ namespace GroupBuy.Schedule.Services
             }
             var addResult = new AddResult();
             addResult.JobId = id;
-            RecurringJob.AddOrUpdate(id, taskMethod, cronExpression);
+            RecurringJob.AddOrUpdate(id, taskMethod, cronExpression,new RecurringJobOptions(){ 
+                TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time") // 設定為台灣時區 
+            });
             var monitoringApi = JobStorage.Current.GetMonitoringApi();
             return addResult;
         }
