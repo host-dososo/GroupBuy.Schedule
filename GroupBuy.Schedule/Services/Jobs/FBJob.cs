@@ -65,7 +65,7 @@ namespace GroupBuy.Schedule.Services.Jobs
                     
                     sr = DataService.MergeData<ServiceResult<object>>(response);
                     //sr.Code = response.ServiceCode;
-                    LogService.WriteJsonLog("GetGroupInfo", new { type = "END_REQUEST", req, response, executedTime = elapsedTime });
+                    LogService.WriteJsonLog("FBAsyncOrder", new { type = "END_REQUEST", req, response, executedTime = elapsedTime });
 
                     await _connection.Start();
                     await _hubProxy.Invoke(SignalRKeys.FBSelfbot.ScheduleEnqueqed, jobId, response);

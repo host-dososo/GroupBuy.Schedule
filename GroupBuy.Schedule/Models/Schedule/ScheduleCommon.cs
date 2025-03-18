@@ -5,6 +5,7 @@
         // 發布貼文至LINE記事本
         CreatePostToLine = 2,
         FBAsyncOrder = 3,
+        SupplyGoods= 4,
     }
 
     public enum ScheduleType

@@ -42,6 +42,10 @@ namespace GroupBuy.Schedule.Services
                         var fbJob = new FBJob();
                         fbJob.FBAsyncOrder(payload!, context.BackgroundJob.Id);
                         break;
+                    case ScheduleName.SupplyGoods:
+                        var merJob = new MerJob();
+                        merJob.SupGooToMer(payload!, context.BackgroundJob.Id);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
