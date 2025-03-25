@@ -6,6 +6,7 @@ namespace GroupBuy.Schedule.Models.FBJob.Query
     {
         public int MerchantId { get; set; }
         public string? JobId { get; set; }
+        public bool WithPhotos { get; set; }
         public List<string> FeedCodes { get; set; }
         public List<string> GroupIds { get; set; }
         public List<string> ExcludeCommentIds { get; set; }

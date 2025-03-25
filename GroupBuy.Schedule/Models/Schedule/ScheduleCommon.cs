@@ -6,6 +6,7 @@
         CreatePostToLine = 2,
         FBAsyncOrder = 3,
         SupplyGoods= 4,
+        SysErrorLogSendMail= 5,
     }
 
     public enum ScheduleType

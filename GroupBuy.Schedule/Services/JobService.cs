@@ -46,6 +46,10 @@ namespace GroupBuy.Schedule.Services
                         var merJob = new MerJob();
                         merJob.SupGooToMer(payload!, context.BackgroundJob.Id);
                         break;
+                    case ScheduleName.SysErrorLogSendMail:
+                        var sysJob = new SysJob();
+                        sysJob.ErrorLogSendMail(payload!, context.BackgroundJob.Id);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
