@@ -29,6 +29,11 @@ public partial class MerSupplier
     public int MerSupCatId { get; set; }
 
     /// <summary>
+    /// 該供應商為哪個商家供應 (該供應商是否為我們系統之商家)
+    /// </summary>
+    public int? FromMerId { get; set; }
+
+    /// <summary>
     /// 統一編號
     /// </summary>
     public string? TaxId { get; set; }

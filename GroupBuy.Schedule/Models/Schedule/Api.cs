@@ -24,12 +24,22 @@ namespace GroupBuy.Schedule.Models.Schedule.Api
         public string JobId { get; set; }
         public bool WithRecurringJob { get; set; }
     }
+    
+    public class ScheduleRequeueRequest
+    {
+        public string JobId { get; set; }
+        public string? RecurringJobId { get; set; }
+    }
 
     public class ScheduleAddResponse : AddResult
     {      
     }
 
     public class ScheduleEditResponse : EditResult
+    {
+    }
+
+    public class ScheduleRequeueResponse : RequeueResult
     {
     }
 

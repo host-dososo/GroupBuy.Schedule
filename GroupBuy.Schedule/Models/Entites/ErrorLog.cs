@@ -73,6 +73,11 @@ public partial class ErrorLog
     /// </summary>
     public string? SolveStatus { get; set; }
 
+    /// <summary>
+    /// 執行者ip
+    /// </summary>
+    public string? Ip { get; set; }
+
     public int? UserId { get; set; }
 
     public byte? UserType { get; set; }

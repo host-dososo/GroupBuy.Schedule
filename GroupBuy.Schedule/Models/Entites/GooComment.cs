@@ -58,6 +58,13 @@ public partial class GooComment
     /// </summary>
     public string MemSocName { get; set; } = null!;
 
+    public string? MemSocHeadImgUrl { get; set; }
+
+    /// <summary>
+    /// 社群會員綁定狀態 (0: 未綁定時下單/1:已綁定時下單 /2:綁定前下單)
+    /// </summary>
+    public string? MemSocBindState { get; set; }
+
     /// <summary>
     /// 留言內容
     /// </summary>

@@ -5,12 +5,14 @@ using GroupBuy.Schedule.Models.Schedule.Service;
 using GroupBuy.Schedule.Services;
 using GroupBuy.Schedule.Services.Repos;
 using Hangfire;
+using Hangfire.States;
 using Hangfire.Storage;
 using Hangfire.Storage.Monitoring;
 using Microsoft.AspNetCore.Mvc;
 using NCrontab;
 using Newtonsoft.Json.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
 using System.Text.Json;
 
 namespace GroupBuy.Schedule.Controllers
@@ -36,6 +38,8 @@ namespace GroupBuy.Schedule.Controllers
             {
                 Enum.TryParse(req.ScheduleName, out ScheduleName scheduleName);
                 AddResult? addResult = null;
+                _scheduleService.SetDefaultInfo(scheduleName, req.Payload!);
+
                 // 根據傳入的 ScheduleName 決定執行哪一種排程方式
                 switch (req.ScheduleType)
                 {
@@ -159,5 +163,56 @@ namespace GroupBuy.Schedule.Controllers
             }
             return ar;
         }
+
+
+        [HttpPost]
+        public async Task<ApiResult<ScheduleRequeueResponse?>> Requeue(ScheduleRequeueRequest req)
+        {
+            var ar = new ApiResult<ScheduleRequeueResponse?>("立即執行");
+            var sr = new ScheduleRequeueResponse();
+            try
+            {
+                bool isRecurring = false;
+                using (var connection = JobStorage.Current.GetConnection())
+                {
+                    var recurringJobs = connection.GetRecurringJobs();
+
+                    isRecurring = recurringJobs.Any(r => r.Id == req.RecurringJobId);
+                }
+                var monitoringApi = JobStorage.Current.GetMonitoringApi();
+                var jobDetails = monitoringApi.JobDetails(req.JobId);
+                ar.CheckToException(jobDetails == null, "找不到該排程任務");
+                var client = new BackgroundJobClient();
+                string? newJobId = null;
+                
+                // 取得 job 的詳細資料
+                var details = monitoringApi.JobDetails(req.JobId);
+                if (details != null)
+                {
+                    var originalJob = details.Job;
+
+                    // 複製成新的 job
+                    newJobId = client.Create(originalJob, new EnqueuedState());
+                    Console.WriteLine($"新 Job 已建立並立即執行，Id = {newJobId}");
+                }
+
+                //// 若為週期性任務
+                //if (isRecurring)
+                //{
+                //    RecurringJob.TriggerJob(req.RecurringJobId);
+                //}
+
+
+                sr.JobId = newJobId;
+                sr.RecurringJobId = req.RecurringJobId;
+                ar.SetResult(sr);
+            }
+            catch (Exception ex)
+            {
+                ar.SetResult(ex);
+            }
+            return ar;
+        }
+
     }
 }

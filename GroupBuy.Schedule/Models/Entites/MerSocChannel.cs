@@ -66,9 +66,19 @@ public partial class MerSocChannel
     public bool IsNewPage { get; set; }
 
     /// <summary>
+    /// 社群圖片連結
+    /// </summary>
+    public string? ImgUrl { get; set; }
+
+    /// <summary>
     /// 社群間父子關係 Ex: LINE社群底下多個聊天室 (父-&gt;子)(SocType:9 -&gt;10)，該欄位寫入MerSocChaId
     /// </summary>
     public int? ParentId { get; set; }
+
+    /// <summary>
+    /// 角色 (null: 一般身分, 1: 管理員身分)
+    /// </summary>
+    public string? Role { get; set; }
 
     public string? AccToken { get; set; }
 

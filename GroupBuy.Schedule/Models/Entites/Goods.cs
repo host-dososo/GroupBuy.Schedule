@@ -48,6 +48,8 @@ public partial class Goods
     /// </summary>
     public decimal? BuyMaxCnt { get; set; }
 
+    public decimal? LastPrice { get; set; }
+
     /// <summary>
     /// 商品介紹
     /// </summary>
@@ -87,6 +89,16 @@ public partial class Goods
     /// 是否置頂(0:否/1:是)
     /// </summary>
     public bool IsTop { get; set; }
+
+    /// <summary>
+    /// 該商品建立於批貨商的某個商品
+    /// </summary>
+    public long? SupGooId { get; set; }
+
+    /// <summary>
+    /// 該商品建立於最上層批貨商的某個商品
+    /// </summary>
+    public long? RootSupGooId { get; set; }
 
     /// <summary>
     /// 備註

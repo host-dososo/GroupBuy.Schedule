@@ -45,6 +45,8 @@ public partial class v_MerMember
 
     public string? Mobile { get; set; }
 
+    public string? MobileLastThree { get; set; }
+
     public string? Receiver { get; set; }
 
     public string? FBUsrId { get; set; }
@@ -88,4 +90,8 @@ public partial class v_MerMember
     public int? RefMerchantId { get; set; }
 
     public string MerMemStatus { get; set; } = null!;
+
+    public DateOnly? LastDealDate { get; set; }
+
+    public DateTime CreatedTime { get; set; }
 }

@@ -48,6 +48,8 @@ public partial class GooSpec
     /// </summary>
     public decimal PriceBatch { get; set; }
 
+    public decimal? LastPrice { get; set; }
+
     /// <summary>
     /// 一個會員最多只能買多少個
     /// </summary>

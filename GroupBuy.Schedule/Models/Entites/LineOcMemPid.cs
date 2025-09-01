@@ -3,45 +3,41 @@ using System.Collections.Generic;
 
 namespace GroupBuy.Schedule.Models.Entites;
 
-public partial class MerSchedJob
+/// <summary>
+/// Line社群會員綁定Mapping
+/// </summary>
+public partial class LineOcMemPid
 {
-    public int Id { get; set; }
-
-    public int MerchantId { get; set; }
-
-    public int? Num { get; set; }
+    public long Id { get; set; }
 
     /// <summary>
-    /// 作業功能
+    /// 社群會員ID (From LineSelfbot)
     /// </summary>
-    public int SysFunActId { get; set; }
+    public string Pid { get; set; } = null!;
+
+    public int? MemberId { get; set; }
 
     /// <summary>
-    /// From HangFire.Job 
+    /// 社群會員匿名名稱 (From LineSelfbot)
     /// </summary>
-    public string? JobId { get; set; }
+    public string? Nickname { get; set; }
 
     /// <summary>
-    /// 排程類型 (0:FireAndForget即時執行 /1:Recurring定期執行 /2:Delayed延遲執行 /3:DelayedToTime延遲到指定時間)
+    /// 社群會員頭貼 (From LineSelfbot)
     /// </summary>
-    public byte? Type { get; set; }
+    public string? ImageObsHash { get; set; }
 
     /// <summary>
-    /// From HangFire.Hash
+    /// 社群會員身分 (From LineSelfbot)
     /// </summary>
-    public string? HashKey { get; set; }
-
-    public string? JobContent { get; set; }
+    public string? Role { get; set; }
 
     /// <summary>
-    /// 執行結果
+    /// 社群會員狀態 (From LineSelfbot)
     /// </summary>
-    public string? Result { get; set; }
+    public string? State { get; set; }
 
-    /// <summary>
-    /// from HangFire.Job =&gt; ExpireAt
-    /// </summary>
-    public DateTime? ExpireAt { get; set; }
+    public int? BindUrlId { get; set; }
 
     /// <summary>
     /// 狀態(0-&gt;停用,1-&gt;使用中,9-&gt;刪除)

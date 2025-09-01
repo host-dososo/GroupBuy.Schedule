@@ -2,8 +2,8 @@
 {
     
     public enum ScheduleName { 
-        // 發布貼文至LINE記事本
-        CreatePostToLine = 2,
+        // 發布貼文至LINE社群
+        CreatePostToSoc = 2,
         FBAsyncOrder = 3,
         SupplyGoods= 4,
         SysErrorLogSendMail= 5,

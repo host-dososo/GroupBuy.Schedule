@@ -63,6 +63,10 @@ public partial class v_OrdItemDetail
 
     public decimal OrdTolQty { get; set; }
 
+    public decimal? GetTolQty { get; set; }
+
+    public decimal? ShpTolQty { get; set; }
+
     public decimal? OriOrdTolAmt { get; set; }
 
     public decimal? OfrTolAmt { get; set; }
@@ -106,4 +110,8 @@ public partial class v_OrdItemDetail
     public int? MerSocChaId { get; set; }
 
     public int MemberId { get; set; }
+
+    public string Status { get; set; } = null!;
+
+    public long? GroupId { get; set; }
 }

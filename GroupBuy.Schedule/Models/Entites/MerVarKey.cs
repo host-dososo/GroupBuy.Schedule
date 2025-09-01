@@ -13,13 +13,18 @@ public partial class MerVarKey
     public int Num { get; set; }
 
     /// <summary>
-    /// 所屬系統(2:所有/1:商家管理/0:系統管理)
+    /// 所屬系統(3:取貨點管理平台/2:所有/1:商家管理/0:系統管理)
     /// </summary>
     public string OwnSys { get; set; } = null!;
 
     public string Name { get; set; } = null!;
 
     public string? DefValue { get; set; }
+
+    /// <summary>
+    /// 商家註冊完是否直接新增
+    /// </summary>
+    public bool DefAdd { get; set; }
 
     /// <summary>
     /// 設定檔描述

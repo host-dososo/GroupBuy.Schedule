@@ -21,8 +21,6 @@ public partial class v_MerNotice
 
     public string? Url { get; set; }
 
-    public bool IsFocus { get; set; }
-
     public DateTime CreatedTime { get; set; }
 
     public int SysFunId { get; set; }
@@ -31,5 +29,7 @@ public partial class v_MerNotice
 
     public string SysActName { get; set; } = null!;
 
-    public string Expr1SysFunName { get; set; } = null!;
+    public string SysFunName { get; set; } = null!;
+
+    public bool IsFocus { get; set; }
 }

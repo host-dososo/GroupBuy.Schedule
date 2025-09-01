@@ -1,12 +1,16 @@
-﻿using GroupBuy.Schedule.Models;
+﻿using GroupBuy.Schedule.Binders;
+using GroupBuy.Schedule.Models;
 using GroupBuy.Schedule.Models.Entites;
 using GroupBuy.Schedule.Models.Schedule;
 using GroupBuy.Schedule.Models.Schedule.Service;
 using GroupBuy.Schedule.Services.Jobs;
 using Hangfire;
 using Hangfire.Server;
+using Microsoft.AspNet.SignalR.Client;
+using Microsoft.AspNet.SignalR.Client.Hubs;
 using Microsoft.EntityFrameworkCore;
 using NCrontab;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -32,14 +36,16 @@ namespace GroupBuy.Schedule.Services
             try
             {
                 LogService.WriteJsonLog("ExecuteJob", $"ScheduleName:{scheduleName}, payload:{payload}");
+                var fbJob = new FBJob();
+                EmitExecutingJob(scheduleName, payload,context);
                 switch (scheduleName)
                 {
-                    case ScheduleName.CreatePostToLine:
+                    case ScheduleName.CreatePostToSoc:
                         var lineJob = new LineJob();
                         lineJob.CreatePost(payload!, context.BackgroundJob.Id);
+                        fbJob.CreatePost(payload!, context.BackgroundJob.Id);
                         break;
                     case ScheduleName.FBAsyncOrder:
-                        var fbJob = new FBJob();
                         fbJob.FBAsyncOrder(payload!, context.BackgroundJob.Id);
                         break;
                     case ScheduleName.SupplyGoods:
@@ -54,6 +60,7 @@ namespace GroupBuy.Schedule.Services
                         throw new ArgumentOutOfRangeException();
                 }
                 
+
             }
             catch (Exception ex) {
                 LogService.AddLog(ex);
@@ -101,5 +108,7 @@ namespace GroupBuy.Schedule.Services
 
             return afterNextRun - nextRun;
         }
+
+
     }
 }

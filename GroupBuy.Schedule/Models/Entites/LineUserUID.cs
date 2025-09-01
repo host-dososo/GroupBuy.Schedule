@@ -3,45 +3,36 @@ using System.Collections.Generic;
 
 namespace GroupBuy.Schedule.Models.Entites;
 
-public partial class MerSchedJob
+public partial class LineUserUID
 {
-    public int Id { get; set; }
-
-    public int MerchantId { get; set; }
-
-    public int? Num { get; set; }
+    public long Id { get; set; }
 
     /// <summary>
-    /// 作業功能
+    /// 0: 會員/ 1:商家
     /// </summary>
-    public int SysFunActId { get; set; }
+    public byte OwnSys { get; set; }
 
     /// <summary>
-    /// From HangFire.Job 
+    /// 商家or會員ID
     /// </summary>
-    public string? JobId { get; set; }
+    public int UserId { get; set; }
 
     /// <summary>
-    /// 排程類型 (0:FireAndForget即時執行 /1:Recurring定期執行 /2:Delayed延遲執行 /3:DelayedToTime延遲到指定時間)
+    /// LINE名稱 (From LineSelfbot)
     /// </summary>
-    public byte? Type { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
-    /// From HangFire.Hash
+    /// LINE UID (From LineSelfbot)
     /// </summary>
-    public string? HashKey { get; set; }
+    public string UID { get; set; } = null!;
 
-    public string? JobContent { get; set; }
-
-    /// <summary>
-    /// 執行結果
-    /// </summary>
-    public string? Result { get; set; }
+    public string? State { get; set; }
 
     /// <summary>
-    /// from HangFire.Job =&gt; ExpireAt
+    /// LINE 頭貼 (From LineSelfbot)
     /// </summary>
-    public DateTime? ExpireAt { get; set; }
+    public string? ImageObsHash { get; set; }
 
     /// <summary>
     /// 狀態(0-&gt;停用,1-&gt;使用中,9-&gt;刪除)

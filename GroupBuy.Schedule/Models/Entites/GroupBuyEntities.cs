@@ -17,6 +17,8 @@ public partial class GroupBuyEntities : DbContext
 
     public virtual DbSet<AggregatedCounter> AggregatedCounter { get; set; }
 
+    public virtual DbSet<Announcement> Announcement { get; set; }
+
     public virtual DbSet<CashAmtLog> CashAmtLog { get; set; }
 
     public virtual DbSet<CashAmtLogRea> CashAmtLogRea { get; set; }
@@ -97,6 +99,12 @@ public partial class GroupBuyEntities : DbContext
 
     public virtual DbSet<JobQueue> JobQueue { get; set; }
 
+    public virtual DbSet<LineOcBindUrl> LineOcBindUrl { get; set; }
+
+    public virtual DbSet<LineOcMemPid> LineOcMemPid { get; set; }
+
+    public virtual DbSet<LineUserUID> LineUserUID { get; set; }
+
     public virtual DbSet<List> List { get; set; }
 
     public virtual DbSet<MemCart> MemCart { get; set; }
@@ -104,6 +112,8 @@ public partial class GroupBuyEntities : DbContext
     public virtual DbSet<MemFavGoods> MemFavGoods { get; set; }
 
     public virtual DbSet<MemMerSocCha> MemMerSocCha { get; set; }
+
+    public virtual DbSet<MemPickUpNoticeRecord> MemPickUpNoticeRecord { get; set; }
 
     public virtual DbSet<MemRegConfig> MemRegConfig { get; set; }
 
@@ -169,6 +179,8 @@ public partial class GroupBuyEntities : DbContext
 
     public virtual DbSet<Merchant> Merchant { get; set; }
 
+    public virtual DbSet<NoticeAppIdState> NoticeAppIdState { get; set; }
+
     public virtual DbSet<NumTable> NumTable { get; set; }
 
     public virtual DbSet<OrdCanRea> OrdCanRea { get; set; }
@@ -219,6 +231,8 @@ public partial class GroupBuyEntities : DbContext
 
     public virtual DbSet<Shipment> Shipment { get; set; }
 
+    public virtual DbSet<SocComGooSpec> SocComGooSpec { get; set; }
+
     public virtual DbSet<SocType> SocType { get; set; }
 
     public virtual DbSet<State> State { get; set; }
@@ -239,6 +253,12 @@ public partial class GroupBuyEntities : DbContext
 
     public virtual DbSet<SysUsrRol> SysUsrRol { get; set; }
 
+    public virtual DbSet<UserAnnFocusRecord> UserAnnFocusRecord { get; set; }
+
+    public virtual DbSet<UserPushSubsInfo> UserPushSubsInfo { get; set; }
+
+    public virtual DbSet<UserSocHeadImg> UserSocHeadImg { get; set; }
+
     public virtual DbSet<WarHouBra> WarHouBra { get; set; }
 
     public virtual DbSet<WarHouMer> WarHouMer { get; set; }
@@ -249,7 +269,15 @@ public partial class GroupBuyEntities : DbContext
 
     public virtual DbSet<v_GooSpec> v_GooSpec { get; set; }
 
+    public virtual DbSet<v_Goods> v_Goods { get; set; }
+
+    public virtual DbSet<v_GroComment> v_GroComment { get; set; }
+
+    public virtual DbSet<v_LineOcMember> v_LineOcMember { get; set; }
+
     public virtual DbSet<v_MemCart> v_MemCart { get; set; }
+
+    public virtual DbSet<v_MemPickUpNoticeRecord> v_MemPickUpNoticeRecord { get; set; }
 
     public virtual DbSet<v_MemRegConfig> v_MemRegConfig { get; set; }
 
@@ -266,6 +294,8 @@ public partial class GroupBuyEntities : DbContext
     public virtual DbSet<v_MerUseLog> v_MerUseLog { get; set; }
 
     public virtual DbSet<v_MerVariable> v_MerVariable { get; set; }
+
+    public virtual DbSet<v_NoticeAppIdState> v_NoticeAppIdState { get; set; }
 
     public virtual DbSet<v_OrdItemDetail> v_OrdItemDetail { get; set; }
 
@@ -285,7 +315,11 @@ public partial class GroupBuyEntities : DbContext
 
     public virtual DbSet<v_ShipOrder> v_ShipOrder { get; set; }
 
+    public virtual DbSet<v_SocComGooSpec> v_SocComGooSpec { get; set; }
+
     public virtual DbSet<v_SysFunAct> v_SysFunAct { get; set; }
+
+    public virtual DbSet<v_UserAnnFocusRecord> v_UserAnnFocusRecord { get; set; }
 
     public virtual DbSet<v_WarHouBra> v_WarHouBra { get; set; }
 
@@ -306,6 +340,30 @@ public partial class GroupBuyEntities : DbContext
 
             entity.Property(e => e.Key).HasMaxLength(100);
             entity.Property(e => e.ExpireAt).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Announcement>(entity =>
+        {
+            entity.Property(e => e.CreatedTime)
+                .HasDefaultValueSql("(getdate())")
+                .HasComment("創建日期時間")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Creator).HasComment("創建人員");
+            entity.Property(e => e.DeviceTypeId).HasComment("針對某個設備類型出現 0:PC, 1:Mobile");
+            entity.Property(e => e.OwnSys).HasComment("0:前台, 1:後台");
+            entity.Property(e => e.Status)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("((1))")
+                .IsFixedLength()
+                .HasComment("狀態(0->停用,1->使用中,9->刪除)");
+            entity.Property(e => e.UpdatedTime)
+                .HasComment("更新日期時間")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Updater).HasComment("更新人員");
+            entity.Property(e => e.ViewName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<CashAmtLog>(entity =>
@@ -614,6 +672,10 @@ public partial class GroupBuyEntities : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasComment("日期");
             entity.Property(e => e.From).HasComment("1: 後端 2: 前端 3: Store procedure 4:DB Table Trigger");
+            entity.Property(e => e.Ip)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasComment("執行者ip");
             entity.Property(e => e.Line)
                 .HasMaxLength(30)
                 .HasComment("錯誤行號");
@@ -1128,6 +1190,14 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.MemName)
                 .HasMaxLength(50)
                 .HasComment("會員Member Name");
+            entity.Property(e => e.MemSocBindState)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasComment("社群會員綁定狀態 (0: 未綁定時下單/1:已綁定時下單 /2:綁定前下單)");
+            entity.Property(e => e.MemSocHeadImgUrl)
+                .HasMaxLength(500)
+                .IsUnicode(false);
             entity.Property(e => e.MemSocId)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -1227,6 +1297,7 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.IsSales)
                 .HasDefaultValue(true)
                 .HasComment("商品規格是否銷售(0->否/1->是)");
+            entity.Property(e => e.LastPrice).HasColumnType("decimal(8, 2)");
             entity.Property(e => e.Name)
                 .HasMaxLength(30)
                 .HasComment("規格值");
@@ -1253,7 +1324,11 @@ public partial class GroupBuyEntities : DbContext
 
         modelBuilder.Entity<Goods>(entity =>
         {
-            entity.ToTable(tb => tb.HasComment("商品"));
+            entity.ToTable(tb =>
+                {
+                    tb.HasComment("商品");
+                    tb.HasTrigger("tr_Goods_u");
+                });
 
             entity.HasIndex(e => new { e.MerchantId, e.Num }, "IX_Goods").IsUnique();
 
@@ -1277,6 +1352,7 @@ public partial class GroupBuyEntities : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.GooCat2Id).HasComment("商品次分類序號(from GoodsCategory)");
             entity.Property(e => e.IsTop).HasComment("是否置頂(0:否/1:是)");
+            entity.Property(e => e.LastPrice).HasColumnType("decimal(8, 2)");
             entity.Property(e => e.MerchantId).HasComment("商家序號(from Merchant)");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
@@ -1295,6 +1371,7 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.Remark)
                 .HasMaxLength(500)
                 .HasComment("備註");
+            entity.Property(e => e.RootSupGooId).HasComment("該商品建立於最上層批貨商的某個商品");
             entity.Property(e => e.Sort)
                 .HasDefaultValue(99999)
                 .HasComment("排序");
@@ -1307,6 +1384,7 @@ public partial class GroupBuyEntities : DbContext
                 .HasDefaultValueSql("((1))")
                 .IsFixedLength()
                 .HasComment("狀態(0->停用,1->使用中,9->刪除)");
+            entity.Property(e => e.SupGooId).HasComment("該商品建立於批貨商的某個商品");
             entity.Property(e => e.UpdatedTime)
                 .HasComment("更新日期時間")
                 .HasColumnType("datetime");
@@ -1337,6 +1415,15 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.MemName)
                 .HasMaxLength(50)
                 .HasComment("會員Member Name");
+            entity.Property(e => e.MemSocBindState)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("((1))")
+                .IsFixedLength()
+                .HasComment("社群會員綁定狀態 (0: 未綁定時下單/1:已綁定時下單 /2:綁定前下單)");
+            entity.Property(e => e.MemSocHeadImgUrl)
+                .HasMaxLength(500)
+                .IsUnicode(false);
             entity.Property(e => e.MemSocId)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -1356,11 +1443,10 @@ public partial class GroupBuyEntities : DbContext
                 .IsUnicode(false)
                 .HasComment("最上層開團商品發文Id");
             entity.Property(e => e.Status)
-                .HasMaxLength(1)
+                .HasMaxLength(5)
                 .IsUnicode(false)
                 .HasDefaultValueSql("((0))")
-                .IsFixedLength()
-                .HasComment("狀態：(0->未處理留言, 1->已成立訂單留言, 2->毋須成立訂單留言, 9->已刪除留言)");
+                .HasComment("狀態：(0->貼文不收單, 1->已成立訂單留言, 2->待處理, 3->未註冊下單, 9->已刪除留言)");
         });
 
         modelBuilder.Entity<GroGooOfr>(entity =>
@@ -1648,6 +1734,123 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.FetchedAt).HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<LineOcBindUrl>(entity =>
+        {
+            entity.ToTable(tb => tb.HasComment("LINE社群綁定連結 (不關聯MerSocChaId，避免重綁社群連結不同)"));
+
+            entity.Property(e => e.CommentId)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasComment("發布綁定文自動留言 - 留言ID");
+            entity.Property(e => e.CreatedTime)
+                .HasDefaultValueSql("(getdate())")
+                .HasComment("創建日期時間")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Creator).HasComment("創建人員");
+            entity.Property(e => e.PostId)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasComment("貼文ID (From LineSelfbot) /若是從後台發綁定文就會有資料");
+            entity.Property(e => e.SquareMid)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasComment("社群ID (from LineSelfbot)");
+            entity.Property(e => e.Status)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("((1))")
+                .IsFixedLength()
+                .HasComment("狀態(0->停用,1->使用中,9->刪除)");
+            entity.Property(e => e.UpdatedTime)
+                .HasComment("更新日期時間")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Updater).HasComment("更新人員");
+            entity.Property(e => e.Url)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<LineOcMemPid>(entity =>
+        {
+            entity.ToTable(tb => tb.HasComment("Line社群會員綁定Mapping"));
+
+            entity.HasIndex(e => e.Pid, "UX_LineOcMemPid_Pid_Status")
+                .IsUnique()
+                .HasFilter("([Status]='1')");
+
+            entity.Property(e => e.CreatedTime)
+                .HasDefaultValueSql("(getdate())")
+                .HasComment("創建日期時間")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Creator).HasComment("創建人員");
+            entity.Property(e => e.ImageObsHash)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasComment("社群會員頭貼 (From LineSelfbot)");
+            entity.Property(e => e.Nickname)
+                .HasMaxLength(100)
+                .HasComment("社群會員匿名名稱 (From LineSelfbot)");
+            entity.Property(e => e.Pid)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasComment("社群會員ID (From LineSelfbot)");
+            entity.Property(e => e.Role)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasComment("社群會員身分 (From LineSelfbot)");
+            entity.Property(e => e.State)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasComment("社群會員狀態 (From LineSelfbot)");
+            entity.Property(e => e.Status)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("((1))")
+                .IsFixedLength()
+                .HasComment("狀態(0->停用,1->使用中,9->刪除)");
+            entity.Property(e => e.UpdatedTime)
+                .HasComment("更新日期時間")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Updater).HasComment("更新人員");
+        });
+
+        modelBuilder.Entity<LineUserUID>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__LineUser__3214EC076B64E1B9");
+
+            entity.Property(e => e.CreatedTime)
+                .HasDefaultValueSql("(getdate())")
+                .HasComment("創建日期時間")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Creator).HasComment("創建人員");
+            entity.Property(e => e.ImageObsHash)
+                .HasMaxLength(300)
+                .IsUnicode(false)
+                .HasComment("LINE 頭貼 (From LineSelfbot)");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .HasComment("LINE名稱 (From LineSelfbot)");
+            entity.Property(e => e.OwnSys).HasComment("0: 會員/ 1:商家");
+            entity.Property(e => e.State)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Status)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("((1))")
+                .IsFixedLength()
+                .HasComment("狀態(0->停用,1->使用中,9->刪除)");
+            entity.Property(e => e.UID)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasComment("LINE UID (From LineSelfbot)");
+            entity.Property(e => e.UpdatedTime)
+                .HasComment("更新日期時間")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Updater).HasComment("更新人員");
+            entity.Property(e => e.UserId).HasComment("商家or會員ID");
+        });
+
         modelBuilder.Entity<List>(entity =>
         {
             entity.HasKey(e => new { e.Key, e.Id }).HasName("PK_HangFire_List");
@@ -1712,6 +1915,15 @@ public partial class GroupBuyEntities : DbContext
                 .HasComment("更新日期時間")
                 .HasColumnType("datetime");
             entity.Property(e => e.Updater).HasComment("更新人員");
+        });
+
+        modelBuilder.Entity<MemPickUpNoticeRecord>(entity =>
+        {
+            entity.ToTable(tb => tb.HasComment("會員到貨通知紀錄"));
+
+            entity.Property(e => e.PushSubsId).HasComment("透過哪個設備通知 (from UserPushSubsInfo)");
+            entity.Property(e => e.SendTime).HasColumnType("datetime");
+            entity.Property(e => e.SocTypeId).HasComment("透過哪個社群平台發送");
         });
 
         modelBuilder.Entity<MemRegConfig>(entity =>
@@ -2554,6 +2766,8 @@ public partial class GroupBuyEntities : DbContext
 
         modelBuilder.Entity<MerSchedJob>(entity =>
         {
+            entity.ToTable(tb => tb.HasTrigger("tr_MerSchedJob_c"));
+
             entity.Property(e => e.CreatedTime)
                 .HasDefaultValueSql("(getdate())")
                 .HasComment("創建日期時間")
@@ -2577,6 +2791,7 @@ public partial class GroupBuyEntities : DbContext
                 .IsFixedLength()
                 .HasComment("狀態(0->停用,1->使用中,9->刪除)");
             entity.Property(e => e.SysFunActId).HasComment("作業功能");
+            entity.Property(e => e.Type).HasComment("排程類型 (0:FireAndForget即時執行 /1:Recurring定期執行 /2:Delayed延遲執行 /3:DelayedToTime延遲到指定時間)");
             entity.Property(e => e.UpdatedTime)
                 .HasComment("更新日期時間")
                 .HasColumnType("datetime");
@@ -2665,6 +2880,10 @@ public partial class GroupBuyEntities : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasComment("Facebook 社團綁定的粉絲專頁 Id (只有在SocType=2時才可以有值)");
+            entity.Property(e => e.ImgUrl)
+                .HasMaxLength(300)
+                .IsUnicode(false)
+                .HasComment("社群圖片連結");
             entity.Property(e => e.IsNewPage).HasComment("是否為新版本粉專");
             entity.Property(e => e.MerchantId).HasComment("商家序號(from Merchant)");
             entity.Property(e => e.Name)
@@ -2675,6 +2894,11 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.Remark)
                 .HasMaxLength(100)
                 .HasComment("備註");
+            entity.Property(e => e.Role)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasComment("角色 (null: 一般身分, 1: 管理員身分)");
             entity.Property(e => e.SocChaId)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -2750,6 +2974,7 @@ public partial class GroupBuyEntities : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasComment("Email");
+            entity.Property(e => e.FromMerId).HasComment("該供應商為哪個商家供應 (該供應商是否為我們系統之商家)");
             entity.Property(e => e.MerSupCatId).HasComment("供應商分類序號(from MerSupCategory)");
             entity.Property(e => e.MerchantId).HasComment("商家序號(from Merchant)");
             entity.Property(e => e.Mobile)
@@ -2966,6 +3191,7 @@ public partial class GroupBuyEntities : DbContext
                     tb.HasTrigger("WriteNum");
                 });
 
+            entity.Property(e => e.DefAdd).HasComment("商家註冊完是否直接新增");
             entity.Property(e => e.DefValue).HasMaxLength(1000);
             entity.Property(e => e.Description)
                 .HasMaxLength(200)
@@ -2976,7 +3202,7 @@ public partial class GroupBuyEntities : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("((1))")
                 .IsFixedLength()
-                .HasComment("所屬系統(2:所有/1:商家管理/0:系統管理)");
+                .HasComment("所屬系統(3:取貨點管理平台/2:所有/1:商家管理/0:系統管理)");
             entity.Property(e => e.Unit).HasMaxLength(5);
         });
 
@@ -3137,6 +3363,27 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.UseableUsrNum)
                 .HasDefaultValue((short)1)
                 .HasComment("可使用人數");
+        });
+
+        modelBuilder.Entity<NoticeAppIdState>(entity =>
+        {
+            entity.ToTable(tb => tb.HasComment("IOS 到貨通知 PWA APP 登入狀態"));
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasComment("序號");
+            entity.Property(e => e.DeviceDesc).HasMaxLength(200);
+            entity.Property(e => e.DeviceType).HasComment("設備類型 0:PC, 1:Mobile");
+            entity.Property(e => e.ExpTime)
+                .HasComment("登入到期日")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Ip)
+                .HasMaxLength(40)
+                .IsUnicode(false);
+            entity.Property(e => e.LastLoginTime)
+                .HasComment("最後登入時間")
+                .HasColumnType("datetime");
+            entity.Property(e => e.MemberId).HasComment("會員序號");
         });
 
         modelBuilder.Entity<NumTable>(entity =>
@@ -3602,7 +3849,11 @@ public partial class GroupBuyEntities : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__PickUp__3214EC075D3247CC");
 
-            entity.ToTable(tb => tb.HasComment("揀貨單號資料"));
+            entity.ToTable(tb =>
+                {
+                    tb.HasComment("揀貨單號資料");
+                    tb.HasTrigger("tr_PickUp_u");
+                });
 
             entity.Property(e => e.Id).HasComment("序號");
             entity.Property(e => e.BuyName)
@@ -4189,6 +4440,13 @@ public partial class GroupBuyEntities : DbContext
                 .HasColumnType("decimal(9, 2)");
         });
 
+        modelBuilder.Entity<SocComGooSpec>(entity =>
+        {
+            entity.HasKey(e => new { e.CommentId, e.GooSpeId });
+
+            entity.Property(e => e.Qty).HasColumnType("decimal(8, 2)");
+        });
+
         modelBuilder.Entity<SocType>(entity =>
         {
             entity.ToTable(tb => tb.HasComment("社群類別"));
@@ -4471,6 +4729,50 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.SysRolId).HasComment("系統角色序號");
         });
 
+        modelBuilder.Entity<UserAnnFocusRecord>(entity =>
+        {
+            entity.HasKey(e => new { e.AnnId, e.UserId });
+
+            entity.ToTable(tb => tb.HasComment("使用者公告點擊紀錄"));
+
+            entity.Property(e => e.LastFocusTime)
+                .HasComment("最後確認公告日期")
+                .HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<UserPushSubsInfo>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_PushSubscription");
+
+            entity.Property(e => e.CreateTime).HasColumnType("datetime");
+            entity.Property(e => e.DeviceDesc).HasMaxLength(200);
+            entity.Property(e => e.DeviceType).HasComment("設備類型 0:PC, 1:Mobile");
+            entity.Property(e => e.UserId).HasComment("使用者ID 須根據 UserType");
+            entity.Property(e => e.UserType).HasComment("使用者類型 (0:會員/1:商家使用者)");
+        });
+
+        modelBuilder.Entity<UserSocHeadImg>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.SocTypeId, e.OwnSys });
+
+            entity.ToTable(tb => tb.HasComment("會員社群頭貼 - LINE 群組綁定需要頭貼連結作為綁定依據，未來也可以前端抓此表顯示頭貼"));
+
+            entity.Property(e => e.UserId).HasComment("使用者ID (參照OwnSys 決定商家or會員)");
+            entity.Property(e => e.SocTypeId).HasComment("ref: dbo.SocType");
+            entity.Property(e => e.OwnSys).HasComment("0: 會員/ 1:商家");
+            entity.Property(e => e.CreatedTime)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.HeadImgUrl)
+                .HasMaxLength(300)
+                .IsUnicode(false)
+                .HasComment("頭貼連結");
+            entity.Property(e => e.UpdateTime)
+                .HasDefaultValueSql("(getdate())")
+                .HasComment("變更時間")
+                .HasColumnType("datetime");
+        });
+
         modelBuilder.Entity<WarHouBra>(entity =>
         {
             entity.ToTable(tb => tb.HasComment("分倉"));
@@ -4611,6 +4913,7 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.GooNum)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+            entity.Property(e => e.LastPrice).HasColumnType("decimal(8, 2)");
             entity.Property(e => e.Name).HasMaxLength(30);
             entity.Property(e => e.PriceBatch).HasColumnType("decimal(8, 2)");
             entity.Property(e => e.PriceBuy).HasColumnType("decimal(8, 2)");
@@ -4619,7 +4922,123 @@ public partial class GroupBuyEntities : DbContext
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .IsFixedLength();
+            entity.Property(e => e.SupMerName).HasMaxLength(50);
             entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<v_Goods>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("v_Goods");
+
+            entity.Property(e => e.BuyMaxCnt).HasColumnType("decimal(8, 2)");
+            entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+            entity.Property(e => e.DisOrderRsn).HasMaxLength(100);
+            entity.Property(e => e.EndTime).HasColumnType("datetime");
+            entity.Property(e => e.LastPrice).HasColumnType("decimal(8, 2)");
+            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Num)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.PriceBuy).HasColumnType("decimal(8, 2)");
+            entity.Property(e => e.PriceSell).HasColumnType("decimal(8, 2)");
+            entity.Property(e => e.Remark).HasMaxLength(500);
+            entity.Property(e => e.SalesStatusText)
+                .HasMaxLength(6)
+                .IsUnicode(false);
+            entity.Property(e => e.StartTime).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<v_GroComment>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("v_GroComment");
+
+            entity.Property(e => e.ComTime).HasColumnType("datetime");
+            entity.Property(e => e.Comment).HasMaxLength(1000);
+            entity.Property(e => e.CommentId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.DeletedTime).HasColumnType("datetime");
+            entity.Property(e => e.MemName).HasMaxLength(50);
+            entity.Property(e => e.MemSocBindState)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.MemSocHeadImgUrl)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.MemSocId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.MemSocName).HasMaxLength(50);
+            entity.Property(e => e.MerSocChaName).HasMaxLength(50);
+            entity.Property(e => e.OriFeedId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.RootFeedId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.SocChaId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.SocFeedId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Status)
+                .HasMaxLength(5)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<v_LineOcMember>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("v_LineOcMember");
+
+            entity.Property(e => e.BindCommentId)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.BindPostId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+            entity.Property(e => e.HeadImgUrl)
+                .HasMaxLength(300)
+                .IsUnicode(false);
+            entity.Property(e => e.ImageObsHash)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.LineName).HasMaxLength(50);
+            entity.Property(e => e.LineUsrId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Nickname).HasMaxLength(100);
+            entity.Property(e => e.Pid)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.RealName).HasMaxLength(50);
+            entity.Property(e => e.Role)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+            entity.Property(e => e.State)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Status)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
+            entity.Property(e => e.Url)
+                .HasMaxLength(200)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<v_MemCart>(entity =>
@@ -4630,7 +5049,10 @@ public partial class GroupBuyEntities : DbContext
 
             entity.Property(e => e.CreatedTime).HasColumnType("datetime");
             entity.Property(e => e.FBName).HasMaxLength(50);
+            entity.Property(e => e.GooBuyMaxCnt).HasColumnType("decimal(8, 2)");
             entity.Property(e => e.GooName).HasMaxLength(100);
+            entity.Property(e => e.GooQty).HasColumnType("decimal(38, 2)");
+            entity.Property(e => e.GooSpeBuyMaxCnt).HasColumnType("decimal(8, 2)");
             entity.Property(e => e.GooSpeName).HasMaxLength(30);
             entity.Property(e => e.LineName).HasMaxLength(50);
             entity.Property(e => e.OrdTypCode)
@@ -4640,6 +5062,37 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.Qty).HasColumnType("decimal(8, 2)");
             entity.Property(e => e.RealName).HasMaxLength(50);
             entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<v_MemPickUpNoticeRecord>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("v_MemPickUpNoticeRecord");
+
+            entity.Property(e => e.ArrivalTime).HasColumnType("datetime");
+            entity.Property(e => e.DeviceDesc).HasMaxLength(200);
+            entity.Property(e => e.FBName).HasMaxLength(50);
+            entity.Property(e => e.FBUsrId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.HeadImgUrl)
+                .HasMaxLength(300)
+                .IsUnicode(false);
+            entity.Property(e => e.LineName).HasMaxLength(50);
+            entity.Property(e => e.LineUsrId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.OrdNum)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.RealName).HasMaxLength(50);
+            entity.Property(e => e.SendTime).HasColumnType("datetime");
+            entity.Property(e => e.ShipFormNum)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength();
         });
 
         modelBuilder.Entity<v_MemRegConfig>(entity =>
@@ -4678,6 +5131,7 @@ public partial class GroupBuyEntities : DbContext
                 .ToView("v_MerMember");
 
             entity.Property(e => e.Address).HasMaxLength(300);
+            entity.Property(e => e.CreatedTime).HasColumnType("datetime");
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -4734,6 +5188,9 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.Mobile)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.MobileLastThree)
+                .HasMaxLength(6)
+                .IsUnicode(false);
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
@@ -4755,13 +5212,13 @@ public partial class GroupBuyEntities : DbContext
 
             entity.Property(e => e.Content).HasMaxLength(1000);
             entity.Property(e => e.CreatedTime).HasColumnType("datetime");
-            entity.Property(e => e.Expr1SysFunName).HasMaxLength(40);
             entity.Property(e => e.Id).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.SysActCode)
                 .HasMaxLength(2)
                 .IsUnicode(false)
                 .IsFixedLength();
             entity.Property(e => e.SysActName).HasMaxLength(10);
+            entity.Property(e => e.SysFunName).HasMaxLength(40);
             entity.Property(e => e.Title).HasMaxLength(50);
             entity.Property(e => e.Url)
                 .HasMaxLength(1000)
@@ -4864,8 +5321,12 @@ public partial class GroupBuyEntities : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false);
             entity.Property(e => e.FunName).HasMaxLength(40);
+            entity.Property(e => e.HashKey).HasMaxLength(100);
             entity.Property(e => e.JobId)
                 .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Num)
+                .HasMaxLength(1002)
                 .IsUnicode(false);
             entity.Property(e => e.OwnSys)
                 .HasMaxLength(1)
@@ -4874,14 +5335,21 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.PageURL)
                 .HasMaxLength(256)
                 .IsUnicode(false);
-            entity.Property(e => e.StateChName)
+            entity.Property(e => e.ScdStateChName)
                 .HasMaxLength(6)
                 .IsUnicode(false);
-            entity.Property(e => e.StateName).HasMaxLength(20);
+            entity.Property(e => e.ScdStateName).HasMaxLength(20);
             entity.Property(e => e.Status)
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .IsFixedLength();
+            entity.Property(e => e.SysActCode)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.TypeName)
+                .HasMaxLength(8)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<v_MerUseLog>(entity =>
@@ -4923,6 +5391,29 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.Value).HasMaxLength(1000);
         });
 
+        modelBuilder.Entity<v_NoticeAppIdState>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("v_NoticeAppIdState");
+
+            entity.Property(e => e.DeviceDesc).HasMaxLength(200);
+            entity.Property(e => e.ExpTime).HasColumnType("datetime");
+            entity.Property(e => e.FBName).HasMaxLength(50);
+            entity.Property(e => e.FBUsrId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Ip)
+                .HasMaxLength(40)
+                .IsUnicode(false);
+            entity.Property(e => e.LastLoginTime).HasColumnType("datetime");
+            entity.Property(e => e.LineName).HasMaxLength(50);
+            entity.Property(e => e.LineUsrId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.RealName).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<v_OrdItemDetail>(entity =>
         {
             entity
@@ -4938,6 +5429,7 @@ public partial class GroupBuyEntities : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.CreatedTime).HasColumnType("datetime");
             entity.Property(e => e.DebitAmt).HasColumnType("decimal(9, 2)");
+            entity.Property(e => e.GetTolQty).HasColumnType("decimal(6, 2)");
             entity.Property(e => e.GiCitName).HasMaxLength(10);
             entity.Property(e => e.GooSpeName).HasMaxLength(30);
             entity.Property(e => e.GooSpePriceSell).HasColumnType("decimal(9, 2)");
@@ -4990,6 +5482,11 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.ShopAmt).HasColumnType("decimal(9, 2)");
             entity.Property(e => e.ShortAmt).HasColumnType("decimal(9, 2)");
             entity.Property(e => e.ShpTolAmt).HasColumnType("decimal(9, 2)");
+            entity.Property(e => e.ShpTolQty).HasColumnType("decimal(6, 2)");
+            entity.Property(e => e.Status)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength();
             entity.Property(e => e.SubTolAmt).HasColumnType("decimal(9, 2)");
         });
 
@@ -5244,6 +5741,20 @@ public partial class GroupBuyEntities : DbContext
             entity.Property(e => e.VenOrdTime).HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<v_SocComGooSpec>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("v_SocComGooSpec");
+
+            entity.Property(e => e.Code).HasMaxLength(5);
+            entity.Property(e => e.GooName).HasMaxLength(100);
+            entity.Property(e => e.GooSpeName).HasMaxLength(30);
+            entity.Property(e => e.PriceBuy).HasColumnType("decimal(8, 2)");
+            entity.Property(e => e.PriceSell).HasColumnType("decimal(8, 2)");
+            entity.Property(e => e.Qty).HasColumnType("decimal(8, 2)");
+        });
+
         modelBuilder.Entity<v_SysFunAct>(entity =>
         {
             entity
@@ -5262,8 +5773,25 @@ public partial class GroupBuyEntities : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false);
             entity.Property(e => e.SysActName).HasMaxLength(10);
-            entity.Property(e => e.SysFunName)
-                .HasMaxLength(40)
+            entity.Property(e => e.SysFunName).HasMaxLength(40);
+        });
+
+        modelBuilder.Entity<v_UserAnnFocusRecord>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("v_UserAnnFocusRecord");
+
+            entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+            entity.Property(e => e.LastFocusTime).HasColumnType("datetime");
+            entity.Property(e => e.RealName).HasMaxLength(50);
+            entity.Property(e => e.Status)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
+            entity.Property(e => e.ViewName)
+                .HasMaxLength(50)
                 .IsUnicode(false);
         });
 

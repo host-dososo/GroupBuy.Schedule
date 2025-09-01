@@ -11,6 +11,8 @@ public partial class v_MemCart
 
     public int MerchantId { get; set; }
 
+    public long GoodsId { get; set; }
+
     public long? GooSpeId { get; set; }
 
     public long? GroGooSpeId { get; set; }
@@ -32,4 +34,10 @@ public partial class v_MemCart
     public string GooSpeName { get; set; } = null!;
 
     public string GooName { get; set; } = null!;
+
+    public decimal? GooSpeBuyMaxCnt { get; set; }
+
+    public decimal? GooBuyMaxCnt { get; set; }
+
+    public decimal? GooQty { get; set; }
 }

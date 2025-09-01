@@ -2,6 +2,7 @@
 using GroupBuy.Schedule.Binders;
 using GroupBuy.Schedule.Models;
 using GroupBuy.Schedule.Models.FBJob.Query;
+using GroupBuy.Schedule.Models.Schedule;
 using GroupBuy.Schedule.Services.Repos;
 using Microsoft.AspNet.SignalR.Client;
 using Microsoft.Extensions.Hosting;
@@ -25,6 +26,24 @@ namespace GroupBuy.Schedule.Services.Jobs
             _hubProxy = _connection.CreateHubProxy(SignalRKeys.Hub.FBHub);
         }
 
+        public async void CreatePost(string payload, string jobId)
+        {
+            try
+            {
+                // 開始連接
+                await _connection.Start();
+                JObject objPayload = JObject.Parse(payload);
+                if (!string.IsNullOrEmpty(jobId))
+                {
+                    objPayload.Add("jobId", jobId);
+                }
+                await _hubProxy.Invoke(SignalRKeys.MerUsr.CreatePost, objPayload);
+            }
+            catch (Exception ex)
+            {
+                LogService.AddLog(ex);
+            }
+        }
         /// <summary>
         /// 透過貼文編號取得所有留言
         /// </summary>
@@ -62,16 +81,21 @@ namespace GroupBuy.Schedule.Services.Jobs
                     // 格式化輸出
                     string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
                             ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-                    
+
                     sr = DataService.MergeData<ServiceResult<object>>(response);
-                    //sr.Code = response.ServiceCode;
+                    sr.Code = response.ServiceCode;
                     LogService.WriteJsonLog("FBAsyncOrder", new { type = "END_REQUEST", req, response, executedTime = elapsedTime });
 
                     await _connection.Start();
                     await _hubProxy.Invoke(SignalRKeys.FBSelfbot.ScheduleEnqueqed, jobId, response);
                     _connection.Stop();
+
+                    if (!sr.Success) {
+                        var msjService = new MerSchedJobService();
+                        msjService.UpdateResult(jobId, sr);
+                    }
                 }
-              
+
             }
             catch (Exception ex)
             {
@@ -79,8 +103,10 @@ namespace GroupBuy.Schedule.Services.Jobs
                 sw.Stop();
                 LogService.AddLog(ex);
                 sr.SetResult(ex);
-                var msjService = new MerSchedJobService();
-                msjService.UpdateResult(jobId, sr);
+            }
+            finally {
+               
+                EmitExecutedJob(ScheduleName.FBAsyncOrder, reqStr, null);
             }
             return sr;
         }

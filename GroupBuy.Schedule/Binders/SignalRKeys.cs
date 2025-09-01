@@ -26,6 +26,7 @@ namespace GroupBuy.Schedule.Binders
         {
             public static string LineHub { get { return GetName(); } }
             public static string FBHub { get { return GetName(); } }
+            public static string ScheduleHub { get { return GetName(); } }
         }
 
         public class Group { 
@@ -42,6 +43,9 @@ namespace GroupBuy.Schedule.Binders
             }
 
             public static string CreatePost { get { return GetName(); } }
+            public static string EmitExecutingJob { get { return GetName(); } }
+            public static string EmitExecutedJob { get { return GetName(); } }
+            public static string EmitAddedJob { get { return GetName(); } }
         }
 
 

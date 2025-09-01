@@ -15,4 +15,11 @@
 
         public DateTime? ExpireAt { get; set; }
     }
+
+
+    public class RequeueResult
+    {
+        public string? JobId { get; set; }
+        public string? RecurringJobId { get; set; }
+    }
 }

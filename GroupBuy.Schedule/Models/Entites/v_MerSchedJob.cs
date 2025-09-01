@@ -7,11 +7,19 @@ public partial class v_MerSchedJob
 {
     public int Id { get; set; }
 
-    public string JobId { get; set; } = null!;
+    public string? JobId { get; set; }
+
+    public string? HashKey { get; set; }
 
     public int MerchantId { get; set; }
 
+    public byte? Type { get; set; }
+
     public int SysFunActId { get; set; }
+
+    public int SysFunId { get; set; }
+
+    public string SysActCode { get; set; } = null!;
 
     public string? JobContent { get; set; }
 
@@ -37,9 +45,11 @@ public partial class v_MerSchedJob
 
     public long? StateId { get; set; }
 
-    public string? StateName { get; set; }
+    public string? ScdStateName { get; set; }
 
-    public string? StateChName { get; set; }
+    public string? TypeName { get; set; }
+
+    public string? ScdStateChName { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
@@ -50,4 +60,6 @@ public partial class v_MerSchedJob
     public DateTime? ExpireAt { get; set; }
 
     public string Arguments { get; set; } = null!;
+
+    public string? Num { get; set; }
 }

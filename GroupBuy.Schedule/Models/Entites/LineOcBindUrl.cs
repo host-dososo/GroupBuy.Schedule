@@ -3,45 +3,31 @@ using System.Collections.Generic;
 
 namespace GroupBuy.Schedule.Models.Entites;
 
-public partial class MerSchedJob
+/// <summary>
+/// LINE社群綁定連結 (不關聯MerSocChaId，避免重綁社群連結不同)
+/// </summary>
+public partial class LineOcBindUrl
 {
     public int Id { get; set; }
 
     public int MerchantId { get; set; }
 
-    public int? Num { get; set; }
+    /// <summary>
+    /// 社群ID (from LineSelfbot)
+    /// </summary>
+    public string SquareMid { get; set; } = null!;
 
     /// <summary>
-    /// 作業功能
+    /// 貼文ID (From LineSelfbot) /若是從後台發綁定文就會有資料
     /// </summary>
-    public int SysFunActId { get; set; }
+    public string? PostId { get; set; }
 
     /// <summary>
-    /// From HangFire.Job 
+    /// 發布綁定文自動留言 - 留言ID
     /// </summary>
-    public string? JobId { get; set; }
+    public string? CommentId { get; set; }
 
-    /// <summary>
-    /// 排程類型 (0:FireAndForget即時執行 /1:Recurring定期執行 /2:Delayed延遲執行 /3:DelayedToTime延遲到指定時間)
-    /// </summary>
-    public byte? Type { get; set; }
-
-    /// <summary>
-    /// From HangFire.Hash
-    /// </summary>
-    public string? HashKey { get; set; }
-
-    public string? JobContent { get; set; }
-
-    /// <summary>
-    /// 執行結果
-    /// </summary>
-    public string? Result { get; set; }
-
-    /// <summary>
-    /// from HangFire.Job =&gt; ExpireAt
-    /// </summary>
-    public DateTime? ExpireAt { get; set; }
+    public string? Url { get; set; }
 
     /// <summary>
     /// 狀態(0-&gt;停用,1-&gt;使用中,9-&gt;刪除)

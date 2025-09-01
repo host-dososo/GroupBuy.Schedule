@@ -1,4 +1,5 @@
 ﻿using GroupBuy.Schedule.Models;
+using GroupBuy.Schedule.Models.Schedule;
 using GroupBuy.Schedule.Models.Schedule.Service;
 using Hangfire;
 using Hangfire.Storage;
@@ -17,10 +18,17 @@ namespace GroupBuy.Schedule.Services
     public class ScheduleService : Base
     {
         private readonly IBackgroundJobClient _backgroundJobClient;
+        private ScheduleName _scheduleName;
+        private string _payload;
 
         public ScheduleService(IBackgroundJobClient backgroundJobClient)
         {
             _backgroundJobClient = backgroundJobClient;
+        }
+
+        public void SetDefaultInfo(ScheduleName scheduleName, string payload) {
+            _scheduleName = scheduleName;
+            _payload = payload;
         }
 
         // 即時執行任務
@@ -31,6 +39,7 @@ namespace GroupBuy.Schedule.Services
             var monitoringApi = JobStorage.Current.GetMonitoringApi();
             var jobDetails = monitoringApi.JobDetails(addResult.JobId);
             addResult.ExpireAt = jobDetails.ExpireAt;
+            EmitAddedJob(_scheduleName, _payload);
             return addResult;
         }
 
@@ -50,6 +59,7 @@ namespace GroupBuy.Schedule.Services
                 TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time") // 設定為台灣時區 
             });
             var monitoringApi = JobStorage.Current.GetMonitoringApi();
+            EmitAddedJob(_scheduleName, _payload);
             return addResult;
         }
 
@@ -61,6 +71,7 @@ namespace GroupBuy.Schedule.Services
             var monitoringApi = JobStorage.Current.GetMonitoringApi();
             var jobDetails = monitoringApi.JobDetails(addResult.JobId);
             addResult.ExpireAt = jobDetails.ExpireAt;
+            EmitAddedJob(_scheduleName, _payload);
             return addResult;
         }
 
@@ -73,6 +84,7 @@ namespace GroupBuy.Schedule.Services
             var monitoringApi = JobStorage.Current.GetMonitoringApi();
             var jobDetails = monitoringApi.JobDetails(addResult.JobId);
             addResult.ExpireAt = jobDetails.ExpireAt;
+            EmitAddedJob(_scheduleName, _payload);
             return addResult;
         }
 

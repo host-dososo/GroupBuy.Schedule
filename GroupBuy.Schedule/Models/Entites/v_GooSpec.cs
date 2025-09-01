@@ -25,7 +25,13 @@ public partial class v_GooSpec
 
     public string Code { get; set; } = null!;
 
+    public int? SupMerchantId { get; set; }
+
+    public string? SupMerName { get; set; }
+
     public decimal PriceBatch { get; set; }
+
+    public decimal? LastPrice { get; set; }
 
     public decimal? BuyMaxCnt { get; set; }
 

@@ -58,6 +58,13 @@ public partial class GroComment
     /// </summary>
     public string MemSocName { get; set; } = null!;
 
+    public string? MemSocHeadImgUrl { get; set; }
+
+    /// <summary>
+    /// 社群會員綁定狀態 (0: 未綁定時下單/1:已綁定時下單 /2:綁定前下單)
+    /// </summary>
+    public string MemSocBindState { get; set; } = null!;
+
     /// <summary>
     /// 留言內容
     /// </summary>
@@ -81,7 +88,7 @@ public partial class GroComment
     public DateTime? DeletedTime { get; set; }
 
     /// <summary>
-    /// 狀態：(0-&gt;未處理留言, 1-&gt;已成立訂單留言, 2-&gt;毋須成立訂單留言, 9-&gt;已刪除留言)
+    /// 狀態：(0-&gt;貼文不收單, 1-&gt;已成立訂單留言, 2-&gt;待處理, 3-&gt;未註冊下單, 9-&gt;已刪除留言)
     /// </summary>
     public string Status { get; set; } = null!;
 }
