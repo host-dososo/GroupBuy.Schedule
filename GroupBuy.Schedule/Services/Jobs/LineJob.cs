@@ -1,6 +1,7 @@
 ﻿
 using GroupBuy.Schedule.Binders;
 using Microsoft.AspNet.SignalR.Client;
+using Microsoft.AspNet.SignalR.Client.Hubs;
 using Newtonsoft.Json.Linq;
 
 namespace GroupBuy.Schedule.Services.Jobs
@@ -27,7 +28,18 @@ namespace GroupBuy.Schedule.Services.Jobs
                 if (!string.IsNullOrEmpty(jobId)) { 
                     objPayload.Add("jobId", jobId);
                 }
-                await _hubProxy.Invoke(SignalRKeys.MerUsr.CreatePost, objPayload);
+
+                if (_connection.State == ConnectionState.Connected)
+                {
+                    await _hubProxy.Invoke(SignalRKeys.MerUsr.CreatePost, objPayload);
+                }
+                else
+                {
+                    // 可選擇先等待連線恢復
+                    await _connection.Start();
+                    await _hubProxy.Invoke(SignalRKeys.MerUsr.CreatePost, objPayload);
+                }
+                
             }
             catch (Exception ex) {
                 LogService.AddLog(ex);
