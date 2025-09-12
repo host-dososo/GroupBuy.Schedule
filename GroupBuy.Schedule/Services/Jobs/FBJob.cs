@@ -17,13 +17,27 @@ namespace GroupBuy.Schedule.Services.Jobs
         private IHubProxy _hubProxy;
         private HubConnection _connection;
         private string host = AppSettingService.Get("MerBaseUri");
-        public FBJob()
+        public FBJob() : this(0, 0)
+        {
+            (_connection, _hubProxy) = InitConnection(0, 0);
+        }
+
+        public FBJob(int merchantId, int userId) : base(merchantId, userId)
+        {
+            (_connection, _hubProxy) = InitConnection(merchantId, userId);
+        }
+
+        public (HubConnection, IHubProxy) InitConnection(int merchantId, int userId)
         {
             var url = AppSettingService.Get("MerBaseUri");
-            // 這裡填寫你的 ASP.NET MVC 伺服器端的 SignalR URL
-            _connection = new HubConnection(Path.Combine(url, "signalr"));
-            // 指定要連接的 Hub 名稱，假設伺服器端有一個 "ChatHub"
-            _hubProxy = _connection.CreateHubProxy(SignalRKeys.Hub.FBHub);
+            var newQuery = new Dictionary<string, string>
+               {
+                   { "userId", userId.ToString() },
+                   { "merchantId", merchantId.ToString() }
+               };
+            var connection = new HubConnection(Path.Combine(url, "signalr"), newQuery);
+            var hubProxy = connection.CreateHubProxy(SignalRKeys.Hub.FBHub);
+            return (connection, hubProxy);
         }
 
         public async void CreatePost(string payload, string jobId)
@@ -47,9 +61,8 @@ namespace GroupBuy.Schedule.Services.Jobs
         /// <summary>
         /// 透過貼文編號取得所有留言
         /// </summary>
-        /// <param name="postId"></param>
-        /// <param name="commentId"></param>
-        /// <param name="message"></param>
+        /// <param name="reqStr"></param>
+        /// <param name="jobId"></param>
         /// <returns></returns>
         public async Task<ServiceResult<object>> FBAsyncOrder(string reqStr, string jobId)
         {
@@ -62,13 +75,6 @@ namespace GroupBuy.Schedule.Services.Jobs
 
                 using (var sbHttp = new MyHttpService(host))
                 {
-                    // 更新通知
-                    //var notice = db.MerNotice.FirstOrDefault(n => n.Id == req.MerNoticeId);
-                    //if (notice != null)
-                    //{
-                    //    notice.Data = JsonConvert.SerializeObject(new { JobId = jobId });
-                    //    db.SaveChanges();
-                    //}
 
                     var apiReq = DataService.MergeData<FBAsyncOrderRequest>(req);
                     sw.Start();
@@ -107,6 +113,117 @@ namespace GroupBuy.Schedule.Services.Jobs
             finally {
                
                 EmitExecutedJob(ScheduleName.FBAsyncOrder, reqStr, null);
+            }
+            return sr;
+        }
+
+        /// <summary>
+        /// 更新貼文
+        /// </summary>
+        /// <param name="reqStr"></param>
+        /// <param name="jobId"></param>
+        /// <returns></returns>
+        public async Task<ServiceResult<object>> UpdatePost(string reqStr, string jobId)
+        {
+            Stopwatch sw = new Stopwatch();
+            ServiceResult<object> sr = new ServiceResult<object>();
+            try
+            {
+                var req = JsonConvert.DeserializeObject(reqStr);
+                var reqObj = JObject.FromObject(req);
+                using (var sbHttp = new MyHttpService(host))
+                {
+
+                    sw.Start();
+                    reqObj.Add("JobId", jobId);
+                    LogService.WriteJsonLog("UpdateWithFBPost", new { type = "START_REQUEST", reqObj });
+                    var response = await sbHttp.PostAsync<ApiResult<object>>("gsc/UpdateWithFBPost", reqObj);
+                    // 停止計時
+                    sw.Stop();
+                    // 獲取執行時間
+                    TimeSpan ts = sw.Elapsed;
+                    // 格式化輸出
+                    string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                            ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+
+                    sr = DataService.MergeData<ServiceResult<object>>(response);
+                    sr.Code = response.ServiceCode;
+                    LogService.WriteJsonLog("UpdateWithFBPost", new { type = "END_REQUEST", reqObj, response, executedTime = elapsedTime });
+
+                    if (!sr.Success)
+                    {
+                        var msjService = new MerSchedJobService();
+                        msjService.UpdateResult(jobId, sr);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // 停止計時
+                sw.Stop();
+                LogService.AddLog(ex);
+                sr.SetResult(ex);
+            }
+            finally
+            {
+                EmitExecutedJob(ScheduleName.UpdateFBPost, reqStr, null);
+            }
+            return sr;
+        }
+
+
+        /// <summary>
+        /// 刪除貼文
+        /// </summary>
+        /// <param name="reqStr"></param>
+        /// <param name="jobId"></param>
+        /// <returns></returns>
+        public async Task<ServiceResult<object>> DeletePost(string reqStr, string jobId)
+        {
+            Stopwatch sw = new Stopwatch();
+            ServiceResult<object> sr = new ServiceResult<object>();
+            try
+            {
+                var req = JsonConvert.DeserializeObject(reqStr);
+                var reqObj = JObject.FromObject(req);
+                using (var sbHttp = new MyHttpService(host))
+                {
+
+                    sw.Start();
+                    reqObj.Add("JobId", jobId);
+                    LogService.WriteJsonLog("DeleteWithFBPost", new { type = "START_REQUEST", reqObj });
+                    var response = await sbHttp.PostAsync<ApiResult<object>>("gsc/DeleteWithFBPost", reqObj);
+                    // 停止計時
+                    sw.Stop();
+                    // 獲取執行時間
+                    TimeSpan ts = sw.Elapsed;
+                    // 格式化輸出
+                    string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                            ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+
+                    sr = DataService.MergeData<ServiceResult<object>>(response);
+                    sr.Code = response.ServiceCode;
+                    LogService.WriteJsonLog("DeleteWithFBPost", new { type = "END_REQUEST", reqObj, response, executedTime = elapsedTime });
+
+                    if (!sr.Success)
+                    {
+                        var msjService = new MerSchedJobService();
+                        msjService.UpdateResult(jobId, sr);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // 停止計時
+                sw.Stop();
+                LogService.AddLog(ex);
+                sr.SetResult(ex);
+            }
+            finally
+            {
+                EmitExecutedJob(ScheduleName.DeleteFBPost, reqStr, null);
             }
             return sr;
         }

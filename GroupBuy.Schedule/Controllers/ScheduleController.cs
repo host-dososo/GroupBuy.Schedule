@@ -39,6 +39,11 @@ namespace GroupBuy.Schedule.Controllers
                 Enum.TryParse(req.ScheduleName, out ScheduleName scheduleName);
                 AddResult? addResult = null;
                 _scheduleService.SetDefaultInfo(scheduleName, req.Payload!);
+                
+                // 設置使用者資訊
+                int merchantId = Request.Headers.ContainsKey("x-mer-id") ? int.Parse(Request.Headers["x-mer-id"].ToString()) : 0;
+                int userId = Request.Headers.ContainsKey("x-user-id") ? int.Parse(Request.Headers["x-user-id"].ToString()) : 0;
+                _jobService.SetUserInfo(merchantId, userId);
 
                 // 根據傳入的 ScheduleName 決定執行哪一種排程方式
                 switch (req.ScheduleType)

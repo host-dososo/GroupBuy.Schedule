@@ -7,6 +7,10 @@
         FBAsyncOrder = 3,
         SupplyGoods= 4,
         SysErrorLogSendMail= 5,
+        UpdateFBPost= 6,
+        UpdateLinePost = 7,
+        DeleteFBPost= 8,
+        DeleteLinePost= 9,
     }
 
     public enum ScheduleType

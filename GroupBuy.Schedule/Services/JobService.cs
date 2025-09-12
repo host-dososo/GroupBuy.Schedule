@@ -26,9 +26,16 @@ namespace GroupBuy.Schedule.Services
     public class JobService : Base
     {
         public ScheduleService? _scheduleService;
+        public int _merchantId;
+        public int _userId;
 
         public JobService(ScheduleService scheduleService) {
             _scheduleService = scheduleService;
+        }
+
+        public void SetUserInfo(int merchantId, int userId) {
+            _merchantId = merchantId;
+            _userId = userId;
         }
 
         public void ExecuteJob(PerformContext context,ScheduleName scheduleName, string? payload, ExecuteJobOption? option = null)
@@ -36,12 +43,12 @@ namespace GroupBuy.Schedule.Services
             try
             {
                 LogService.WriteJsonLog("ExecuteJob", $"ScheduleName:{scheduleName}, payload:{payload}");
-                var fbJob = new FBJob();
+                var fbJob = new FBJob(_merchantId, _userId);
+                var lineJob = new LineJob(_merchantId,_userId);
                 EmitExecutingJob(scheduleName, payload,context);
                 switch (scheduleName)
                 {
                     case ScheduleName.CreatePostToSoc:
-                        var lineJob = new LineJob();
                         lineJob.CreatePost(payload!, context.BackgroundJob.Id);
                         fbJob.CreatePost(payload!, context.BackgroundJob.Id);
                         break;
@@ -56,6 +63,19 @@ namespace GroupBuy.Schedule.Services
                         var sysJob = new SysJob();
                         sysJob.ErrorLogSendMail(payload!, context.BackgroundJob.Id);
                         break;
+                    case ScheduleName.UpdateFBPost:
+                        fbJob.UpdatePost(payload!, context.BackgroundJob.Id);
+                        break;
+                    case ScheduleName.UpdateLinePost:
+                        lineJob.UpdatePost(payload!, context.BackgroundJob.Id);
+                        break;
+                    case ScheduleName.DeleteFBPost:
+                        fbJob.DeletePost(payload!, context.BackgroundJob.Id);
+                        break;
+                    case ScheduleName.DeleteLinePost:
+                        lineJob.DeletePost(payload!, context.BackgroundJob.Id);
+                        break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

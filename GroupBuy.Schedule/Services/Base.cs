@@ -18,8 +18,15 @@ namespace GroupBuy.Schedule.Services
     {
         
         public readonly GroupBuyEntities db;
+        public int _merchantId;
+        public int _userId;
+
         public Base() {
             db = EFService.CreateEntities();
+        }
+        public Base(int merchantId, int userId) {
+            _merchantId = merchantId;
+            _userId = userId;
         }
 
         public static async void EmitAddedJob(ScheduleName scheduleName, string payload)
