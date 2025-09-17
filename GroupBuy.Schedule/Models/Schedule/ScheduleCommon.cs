@@ -11,6 +11,7 @@
         UpdateLinePost = 7,
         DeleteFBPost= 8,
         DeleteLinePost= 9,
+        ValidMessengerUIDWrited = 10
     }
 
     public enum ScheduleType

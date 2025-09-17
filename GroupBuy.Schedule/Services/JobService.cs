@@ -45,6 +45,7 @@ namespace GroupBuy.Schedule.Services
                 LogService.WriteJsonLog("ExecuteJob", $"ScheduleName:{scheduleName}, payload:{payload}");
                 var fbJob = new FBJob(_merchantId, _userId);
                 var lineJob = new LineJob(_merchantId,_userId);
+                var merJob = new MerJob();
                 EmitExecutingJob(scheduleName, payload,context);
                 switch (scheduleName)
                 {
@@ -56,7 +57,6 @@ namespace GroupBuy.Schedule.Services
                         fbJob.FBAsyncOrder(payload!, context.BackgroundJob.Id);
                         break;
                     case ScheduleName.SupplyGoods:
-                        var merJob = new MerJob();
                         merJob.SupGooToMer(payload!, context.BackgroundJob.Id);
                         break;
                     case ScheduleName.SysErrorLogSendMail:
@@ -74,6 +74,9 @@ namespace GroupBuy.Schedule.Services
                         break;
                     case ScheduleName.DeleteLinePost:
                         lineJob.DeletePost(payload!, context.BackgroundJob.Id);
+                        break;
+                    case ScheduleName.ValidMessengerUIDWrited:
+                        merJob.ValidWriteUID(payload!);
                         break;
 
                     default:
