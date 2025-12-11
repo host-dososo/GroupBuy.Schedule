@@ -32,7 +32,7 @@ namespace GroupBuy.Schedule.Controllers
         [HttpPost]
         public async Task<ApiResult<ScheduleAddResponse?>> Add(ScheduleAddRequest req)
         {
-            var ar = new ApiResult<ScheduleAddResponse?>(ApiResult.Action.·s¼W);
+            var ar = new ApiResult<ScheduleAddResponse?>(ApiResult.Action.æ–°å¢);
             var sr = new ScheduleAddResponse();
             try
             {
@@ -40,12 +40,12 @@ namespace GroupBuy.Schedule.Controllers
                 AddResult? addResult = null;
                 _scheduleService.SetDefaultInfo(scheduleName, req.Payload!);
                 
-                // ³]¸m¨Ï¥ÎªÌ¸ê°T
+                // è¨­ç½®ä½¿ç”¨è€…è³‡è¨Š
                 int merchantId = Request.Headers.ContainsKey("x-mer-id") ? int.Parse(Request.Headers["x-mer-id"].ToString()) : 0;
                 int userId = Request.Headers.ContainsKey("x-user-id") ? int.Parse(Request.Headers["x-user-id"].ToString()) : 0;
                 _jobService.SetUserInfo(merchantId, userId);
 
-                // ®Ú¾Ú¶Ç¤Jªº ScheduleName ¨M©w°õ¦æ­ş¤@ºØ±Æµ{¤è¦¡
+                // æ ¹æ“šå‚³å…¥çš„ ScheduleName æ±ºå®šåŸ·è¡Œå“ªä¸€ç¨®æ’ç¨‹æ–¹å¼
                 switch (req.ScheduleType)
                 {
                     case ScheduleType.FireAndForget:
@@ -54,16 +54,16 @@ namespace GroupBuy.Schedule.Controllers
                         break;
 
                     case ScheduleType.Recurring:
-                        // ©w´Á°õ¦æ¥ô°È¡]¨Ï¥Î Cron ªí¹F¦¡¡^
+                        // å®šæœŸåŸ·è¡Œä»»å‹™ï¼ˆä½¿ç”¨ Cron è¡¨é”å¼ï¼‰
                         if (string.IsNullOrEmpty(req.CronExpression))
                         {
                             throw new ArgumentException("Cron expression must be provided for recurring jobs.");
                         }
-                        // ¸ÑªR Cron ªí¹F¦¡
+                        // è§£æ Cron è¡¨é”å¼
                         var schedule = CrontabSchedule.Parse(req.CronExpression);
                         DateTime nextRun = schedule.GetNextOccurrence(DateTime.Now);
 
-                        // ­pºâ³Ñ¾l®É¶¡
+                        // è¨ˆç®—å‰©é¤˜æ™‚é–“
                         TimeSpan lastTimeUntilNextRun = JobService.ConvertCronToTimeSpan(req.CronExpression);
                         TimeSpan timeUntilNextRun = nextRun - DateTime.Now;
  
@@ -78,7 +78,7 @@ namespace GroupBuy.Schedule.Controllers
                         break;
 
                     case ScheduleType.Delayed:
-                        // ©µ¿ğ°õ¦æ¥ô°È
+                        // å»¶é²åŸ·è¡Œä»»å‹™
                         if (req.DelayInMinutes == null || req.DelayInMinutes == 0)
                         {
                             throw new ArgumentException("Delay time must be provided for delayed jobs.");
@@ -89,7 +89,7 @@ namespace GroupBuy.Schedule.Controllers
                         break;
 
                     case ScheduleType.DelayedToTime:
-                        // ©µ¿ğ¨ì«ü©w®É¶¡°õ¦æ¥ô°È
+                        // å»¶é²åˆ°æŒ‡å®šæ™‚é–“åŸ·è¡Œä»»å‹™
                         if (req.ExecuteAt == null)
                         {
                             throw new ArgumentException("Execute time must be provided for delayed to time jobs.");
@@ -115,16 +115,16 @@ namespace GroupBuy.Schedule.Controllers
         [HttpPost]
         public async Task<ApiResult<ScheduleEditResponse?>> Edit(ScheduleEditRequest req)
         {
-            var ar = new ApiResult<ScheduleEditResponse?>(ApiResult.Action.½s¿è);
+            var ar = new ApiResult<ScheduleEditResponse?>(ApiResult.Action.ç·¨è¼¯);
             var sr = new ScheduleEditResponse();
             try
             {
                 //Enum.TryParse(req.ScheduleName, out ScheduleName scheduleName);
                 var monitoringApi = JobStorage.Current.GetMonitoringApi();
                 var jobDetails = monitoringApi.JobDetails(req.JobId);
-                ar.CheckToException(jobDetails == null, "§ä¤£¨ì¸Ó±Æµ{¥ô°È");
+                ar.CheckToException(jobDetails == null, "æ‰¾ä¸åˆ°è©²æ’ç¨‹ä»»å‹™");
                 var args = jobDetails.Job.Args.ToList();
-                ar.CheckToException(req.ExecuteAt == null, "½Ğ«ü¬£°õ¦æ®É¶¡");
+                ar.CheckToException(req.ExecuteAt == null, "è«‹æŒ‡æ´¾åŸ·è¡Œæ™‚é–“");
                 AddResult? addResult = null;
 
                 addResult = _scheduleService.AddDelayedToTimeJob(() => _jobService.ExecuteJob(null!, (ScheduleName)args[1], (string?)args[2], (ExecuteJobOption?)args[3]), (DateTime)req.ExecuteAt);
@@ -145,7 +145,7 @@ namespace GroupBuy.Schedule.Controllers
         [HttpPost]
         public async Task<ApiResult<ScheduleRemoveResponse?>> Remove(ScheduleRemoveRequest req)
         {
-            var ar = new ApiResult<ScheduleRemoveResponse?>(ApiResult.Action.§R°£);
+            var ar = new ApiResult<ScheduleRemoveResponse?>(ApiResult.Action.åˆªé™¤);
             var sr = new ScheduleRemoveResponse();
             try
             {
@@ -173,7 +173,7 @@ namespace GroupBuy.Schedule.Controllers
         [HttpPost]
         public async Task<ApiResult<ScheduleRequeueResponse?>> Requeue(ScheduleRequeueRequest req)
         {
-            var ar = new ApiResult<ScheduleRequeueResponse?>("¥ß§Y°õ¦æ");
+            var ar = new ApiResult<ScheduleRequeueResponse?>("ç«‹å³åŸ·è¡Œ");
             var sr = new ScheduleRequeueResponse();
             try
             {
@@ -186,22 +186,22 @@ namespace GroupBuy.Schedule.Controllers
                 }
                 var monitoringApi = JobStorage.Current.GetMonitoringApi();
                 var jobDetails = monitoringApi.JobDetails(req.JobId);
-                ar.CheckToException(jobDetails == null, "§ä¤£¨ì¸Ó±Æµ{¥ô°È");
+                ar.CheckToException(jobDetails == null, "æ‰¾ä¸åˆ°è©²æ’ç¨‹ä»»å‹™");
                 var client = new BackgroundJobClient();
                 string? newJobId = null;
                 
-                // ¨ú±o job ªº¸Ô²Ó¸ê®Æ
+                // å–å¾— job çš„è©³ç´°è³‡æ–™
                 var details = monitoringApi.JobDetails(req.JobId);
                 if (details != null)
                 {
                     var originalJob = details.Job;
 
-                    // ½Æ»s¦¨·sªº job
+                    // è¤‡è£½æˆæ–°çš„ job
                     newJobId = client.Create(originalJob, new EnqueuedState());
-                    Console.WriteLine($"·s Job ¤w«Ø¥ß¨Ã¥ß§Y°õ¦æ¡AId = {newJobId}");
+                    Console.WriteLine($"æ–° Job å·²å»ºç«‹ä¸¦ç«‹å³åŸ·è¡Œï¼ŒId = {newJobId}");
                 }
 
-                //// ­Y¬°¶g´Á©Ê¥ô°È
+                //// è‹¥ç‚ºé€±æœŸæ€§ä»»å‹™
                 //if (isRecurring)
                 //{
                 //    RecurringJob.TriggerJob(req.RecurringJobId);
@@ -221,3 +221,4 @@ namespace GroupBuy.Schedule.Controllers
 
     }
 }
+
